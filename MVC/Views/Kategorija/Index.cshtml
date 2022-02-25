@@ -1,0 +1,107 @@
+﻿@model MVC.Models.Kategorija
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<link href="~/Content/Custom.css" rel="stylesheet" />
+<link href="~/Content/Kategorija.css" rel="stylesheet" />
+
+<h2>Kategorije</h2>
+
+
+<p>
+    @Html.ActionLink(linkText: "Dodaj kategoriju", actionName: "CreateKategorija", routeValues: null, htmlAttributes: new { @class = "btn btn-default" })
+</p>
+
+<table id="tbl1" class="table">
+    <thead>
+        <tr>
+            <th>Naziv</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+    <tfoot></tfoot>
+</table>
+
+
+@section scripts{
+    <script>
+
+        $(document).ready(function () {
+            $('.table').DataTable({
+                lengthMenu: [[10, 20, 50], [10, 20, 50]],
+                ajax: {
+                    url: '/api/apikategorija',
+                    dataSrc: ''
+                },
+                columns: [
+                    { data: 'Naziv', orderable: true, className: "custom"  },
+                    {
+                        name: 'actions', data: '', orderable: false,
+                        render: function (data, type, kategorija) {
+                            return `<button class="btn btn-danger"
+                                          data-id=${kategorija.IDKategorija} 
+                                          data-naziv=${kategorija.Naziv}>
+                                             Izbrisi
+                                    </button>
+                                    <button class="btn btn-info"
+                                         data-id=${kategorija.IDKategorija}>
+                                             Detalji
+                                    </button>
+                                    <button class="btn btn-primary"
+                                        data-id=${kategorija.IDKategorija}>
+                                            Uredi
+                                    </button>`
+                        }, className: "custom" 
+                    }
+                ]
+            });
+        });
+
+        let btnEdit;
+        $('.table').on('click', '.btn-primary', function (e) {
+            btnEdit = this;
+            const { id } = btnEdit.dataset;
+            window.location.replace(`@Url.Action(controllerName: "Kategorija", actionName: "EditKategorija")/${id}`);
+        });
+
+        let btnDetails;
+        $('.table').on('click', '.btn-info', function (e) {
+            btnDetails = this;
+            const { id } = btnDetails.dataset;
+            window.location.replace(`@Url.Action(controllerName:"Kategorija", actionName: "KategorijaDetails")/${id}`);
+        });
+
+        let btnDelete;
+        const tableKategorija = $('.table').on('click', '.btn-danger', onDeleteClick);
+
+        function onDeleteClick(e) {
+            btnDelete = this;
+            const { id, naziv } = btnDelete.dataset;
+
+            if (confirm(`Obrisati kategoriju ${naziv}?`)) {
+                deleteKategorija(id);
+            }
+        }
+
+        function deleteKategorija(id) {
+            $.ajax({
+                url: `/api/apikategorija/${id}`,
+                method: 'delete'
+            })
+                .done(function () {
+                    $('.table').DataTable()
+                        .row($(btnDelete).parents('tr'))
+                        .remove()
+                        .draw();
+                })
+                .fail(function () {
+                    console.log('Kategorija nije izbrisana...')
+                });
+        }
+
+    </script>
+    }

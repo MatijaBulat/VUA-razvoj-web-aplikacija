@@ -1,0 +1,125 @@
+﻿@model IEnumerable<MVC.Models.Proizvod>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<link href="~/Content/Custom.css" rel="stylesheet" />
+
+<h2>Proizvodi</h2>
+
+<p>
+    @Html.ActionLink(linkText: "Dodaj proizvod", actionName: "CreateProizvod", routeValues: null, htmlAttributes: new { @class = "btn btn-default" })
+</p>
+
+<table id="tbl1" class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.BrojProizvoda)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Naziv)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Boja)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CijenaBezPDV)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PotkategorijaID)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                @Html.HiddenFor(modelItem => item.IDProizvod)
+                <td>
+                    @Html.DisplayFor(modelItem => item.BrojProizvoda)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Naziv)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Boja)
+                </td>
+                <td align="center">
+                    @Html.DisplayFor(modelItem => item.CijenaBezPDV)
+                </td>
+                <td align="center">
+                    @Html.DisplayFor(modelItem => item.Potkategorija.Naziv)
+                </td>
+                <td align="center">
+                    @Html.ActionLink(
+                   linkText: "Uredi",
+                   actionName: "EditProizvod",
+                   routeValues: new { id = item.IDProizvod },
+                   htmlAttributes: new { @class = "btn btn-primary" })
+                    @Html.ActionLink(
+                   linkText: "Detalji",
+                   actionName: "ProizvodDetails",
+                   routeValues: new { id = item.IDProizvod },
+                   htmlAttributes: new { @class = "btn btn-info" })
+                    @Html.ActionLink(
+                   linkText: "Izbriši",
+                   actionName: "DeleteProizvod",
+                   routeValues: new { id = item.IDProizvod },
+                   htmlAttributes: new { @class = "btn btn-danger", 
+                   data_id = item.IDProizvod,
+                   data_naziv = item.Naziv })
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>
+
+
+
+@section scripts {
+    <script>
+
+        let btnDelete;
+        $('.btn-danger').on('click', function (e) {
+            e.preventDefault();
+            btnDelete = this;
+            const { naziv, id } = btnDelete.dataset;
+
+            if (confirm(`Obrisati proizvod ${naziv}?`)) {
+                $.ajax({
+                    url: '@Url.Action(actionName: "DeleteProizvod", controllerName: "Proizvod")',
+                    data: { id: id },
+                    statusCode: {
+                        200: function () {  
+                            $('#tbl1').DataTable()
+                                .row($(btnDelete).parents('tr'))
+                                .remove()
+                                .draw();
+                        },
+                        400: function () {
+                            console.log('Proizvod nije obrisan...');
+                        }
+                    }
+                })
+            }
+        })
+
+        $('.table').DataTable({
+            lengthMenu: [[10, 20, 50], [10, 20, 50]],
+            "order": [[1, "asc"]],
+            columns: [
+                { name: "BrojProizvoda", orderable: false, className: "custom" },
+                { name: "Naziv", orderable: true, className: "custom" },
+                { name: "Boja", orderable: true, className: "custom" },
+                { name: "Cijena", orderable: true, className: "custom" },
+                { name: "Potkategorija", orderable: true, className: "custom" },
+                { name: "Actions", orderable: false, className: "custom" }
+            ]
+        });
+    </script>
+
+}

@@ -1,0 +1,72 @@
+﻿@model MVC.Models.Proizvod
+
+@{
+    ViewBag.Title = "ProizvodDetails";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Proizvod</h4>
+    <hr />
+    <dl class="dl-horizontal">
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Naziv)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Naziv)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BrojProizvoda)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BrojProizvoda)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Boja)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Boja)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MinimalnaKolicinaNaSkladistu)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MinimalnaKolicinaNaSkladistu)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CijenaBezPDV)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CijenaBezPDV)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Potkategorija)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Potkategorija.Naziv)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Potkategorija.Kategorija)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Potkategorija.Kategorija.Naziv)
+        </dd>
+    </dl>
+</div>
+<p>
+    @Html.ActionLink(linkText: "Back to List", actionName: "Index")
+</p>

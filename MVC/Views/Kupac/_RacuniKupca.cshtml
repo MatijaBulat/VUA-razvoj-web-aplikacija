@@ -1,0 +1,57 @@
+﻿@model IEnumerable<MVC.Models.Racun>
+
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.BrojRacuna)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DatumIzdavanja)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.KomercijalistID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.KreditnaKarticaID)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            @Html.HiddenFor(modelItem => item.IDRacun)
+            <td>
+                @Html.DisplayFor(modelItem => item.BrojRacuna)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DatumIzdavanja)
+            </td>
+            @if (item.Komercijalist != null)
+            {
+                <td>@item.Komercijalist.Ime @item.Komercijalist.Prezime</td>
+            }
+            else
+            {
+                <td>@Html.Label("Nema komercijalista")</td>
+            }
+            @if (item.KreditnaKartica != null)
+            {
+                <td>@Html.DisplayFor(modelItem => item.KreditnaKartica.Tip)</td>
+            }
+            else
+            {
+                <td>@Html.Label("Plaćeno gotovinom")</td>
+            }
+            <th>
+                @Html.ActionLink(
+               linkText: "Detalji",
+               actionName: "RacunDetails",
+               routeValues: new { id = item.IDRacun },
+               htmlAttributes: new { @class = "btn btn-info  modal-link" })
+            </th>
+        </tr>
+    }
+
+</table>

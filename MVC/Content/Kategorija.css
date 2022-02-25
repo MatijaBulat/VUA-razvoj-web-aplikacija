@@ -1,0 +1,7 @@
+﻿.btn-primary, 
+.btn-info, 
+.btn-danger {
+    float: right;
+    margin: 2px;
+}
+

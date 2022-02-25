@@ -1,0 +1,113 @@
+﻿@model MVC.Models.Potkategorija
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<link href="~/Content/Custom.css" rel="stylesheet" />
+<link href="~/Content/Kategorija.css" rel="stylesheet" />
+
+<h2>Potkategorije</h2>
+
+
+<p>
+    @Html.ActionLink(linkText: "Dodaj potkategoriju", actionName: "CreatePotkategorija", routeValues: null, htmlAttributes: new { @class = "btn btn-default" })
+</p>
+
+
+<table id="tbl1" class="table">
+    <thead>
+        <tr>
+            <th>Naziv</th>
+            <th>Kategorija</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+    <tfoot></tfoot>
+</table>
+
+
+
+@section scripts{
+    <script>
+
+        $(document).ready(function () {
+            $('.table').DataTable({
+                lengthMenu: [[10, 20, 50], [10, 20, 50]],
+                ajax: {
+                    url: '/api/apipotkategorija',
+                    dataSrc: ''
+                },
+                columns: [
+                    { data: 'Naziv', orderable: true, className: "custom" },
+                    { data: 'Kategorija.Naziv', orderable: true, className: "custom" },
+                    {
+                        name: 'Actions', data: '', orderable: false,
+                        render: function (data, type, potkategorija) {
+                            return `<button class="btn btn-danger"
+                                            data-id=${potkategorija.IDPotkategorija}
+                                            data-naziv=${potkategorija.Naziv}>
+                                                Izbriši
+                                    </button>
+                                    <button class="btn btn-info"
+                                            data-id=${potkategorija.IDPokategorija}>
+                                                Detalji
+                                    </button>
+                                    <button class="btn btn-primary"
+                                            data-id=${potkategorija.IDPotkategorija}>
+                                                Uredi
+                                    </button>`
+                        }
+                    }
+                ]
+            });
+        });
+
+         let btnEdit;
+        $('.table').on('click', '.btn-primary', function (e) {
+            btnEdit = this;
+            const { id } = btnEdit.dataset;
+            window.location.replace(`@Url.Action(controllerName: "Potkategorija", actionName: "EditPotkategorija")/${id}`);
+        });
+
+        let btnDetails;
+        $('.table').on('click', '.btn-info', function (e) {
+            btnDetails = this;
+            const { id } = btnDetails.dataset;
+            window.location.replace(`@Url.Action(controllerName:"Potkategorija", actionName: "PotkategorijaDetails")/${id}`);
+        });
+
+        let btnDelete;
+        const tablePotkategorija = $('.table').on('click', '.btn-danger', onDeleteClick);
+
+        function onDeleteClick(e) {
+            btnDelete = this;
+            const { id, naziv } = btnDelete.dataset;
+
+            if (confirm(`Obrisati potkategoriju ${naziv}?`)) {
+                deletePotkategorija(id);
+            }
+        }
+
+        function deletePotkategorija(id) {
+            $.ajax({
+                url: `/api/apipotkategorija/${id}`,
+                method: 'delete'
+            })
+                .done(function () {
+                    $('.table').DataTable()
+                        .row($(btnDelete).parents('tr'))
+                        .remove()
+                        .draw();
+                })
+                .fail(function () {
+                    console.log('Potkategorija nije izbrisana...')
+                });
+        }
+
+    </script>
+}
+

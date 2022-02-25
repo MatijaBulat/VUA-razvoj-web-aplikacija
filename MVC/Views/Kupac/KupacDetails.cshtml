@@ -1,0 +1,91 @@
+﻿@model MVC.Models.Kupac
+
+@{
+    ViewBag.Title = "KupacDetails";
+}
+
+
+<h2>Details</h2>
+
+<div>
+    <h4>@Model.Ime @Model.Prezime</h4>
+    <hr />
+    <dl class="dl-horizontal">
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Ime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Ime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Prezime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Prezime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Telefon)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Telefon)
+        </dd>
+
+        <dt>
+            @Html.Label("Grad")
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Grad.Naziv)
+        </dd>
+
+        <dt>
+            @Html.Label("Drzava")
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Grad.Drzava.Naziv)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink(linkText: "Back to List", actionName: "Index")
+</p>
+
+<br />
+@Html.Action(actionName: "RacuniKupca", routeValues: Model.IDKupac)
+
+@section scripts {
+    <script>
+
+        $(function () {
+            $('body').on('click', 'a.modal-link', function (e) {
+                e.preventDefault();
+
+                $('.modal').modal('hide');
+
+                var url = $(this).attr("href");
+
+                $.get(url, function (data) {
+                    $(data).modal();
+                });
+            });
+
+        });
+
+    </script>
+}

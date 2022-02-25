@@ -1,0 +1,109 @@
+﻿@model IEnumerable<MVC.Models.Kupac>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Kupci</h2>
+
+<link href="~/Content/Custom.css" rel="stylesheet" />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Ime</th>
+            <th>Prezime</th>
+            <th>Email</th>
+            <th>Grad</th>
+            <th>Drzava</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+    <tfoot>
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </tfoot>
+</table>
+
+@section scripts{
+    <script>
+
+        
+        $(document).ready(function () {
+            $('.table').DataTable({
+                lengthMenu: [[10, 20, 50], [10, 20, 50]],
+                ajax: {
+                    url: '/api/apikupac',
+                    dataSrc: ''
+                },
+                columns: [
+                    { data: 'Ime', orderable: true, className: "custom" },
+                    { data: 'Prezime', orderable: true, className: "custom" },
+                    {
+                        data: '', orderable: false, 
+                        render: function (data, type, kupac) {
+                            return `<a href="mailto:${kupac.Email}">${kupac.Email}</a>`
+                        }, className: "custom"
+                    },
+                    { data: 'Grad.Naziv', orderable: false, className: "custom" },
+                    { data: 'Grad.Drzava.Naziv', orderable: false, className: "custom" },
+                    {
+                        data: '', orderable: false,
+                        render: function (data, type, kupac) {
+                            return `<button class="btn btn-info"
+                                        data-id=${kupac.IDKupac}>
+                                            Detalji 
+                                    </button>
+                                    <button class="btn btn-primary"
+                                        data-id=${kupac.IDKupac}>
+                                            Uredi
+                                    </button>`
+                        }, className: "custom"
+                    }
+                ],
+                initComplete: function () {
+                    this.api().columns([3, 4]).every(function () {
+                        var column = this;
+                        var select = $('<select><option value=""></option></select>')
+                            .appendTo($(column.footer()).empty())
+                            .on('change', function () {
+                                var val = $.fn.dataTable.util.escapeRegex(
+                                    $(this).val()
+                                );
+                                column
+                                    .search(val ? '^' + val + '$' : '', true, false)
+                                    .draw();
+                            });
+                        column.data().unique().sort().each(function (d, j) {
+                            select.append('<option value="' + d + '">' + d + '</option>')
+                        });
+                    });
+                }
+            });
+        });
+
+        let btnDetails;
+        $('.table').on('click', '.btn-info', function (e) {
+            btnDetails = this;
+            const { id } = btnDetails.dataset;
+            window.location.replace(`@Url.Action(controllerName:"Kupac", actionName: "KupacDetails")/${id}`);
+        });
+
+        let btnEdit;
+        $('.table').on('click', '.btn-primary', function (e) {
+            btnEdit = this;
+            const { id } = btnEdit.dataset;
+            window.location.replace(`@Url.Action(controllerName:"Kupac", actionName: "EditKupac")/${id}`);
+        });
+
+
+    </script>
+}
+

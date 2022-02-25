@@ -1,0 +1,45 @@
+﻿@model MVC.Models.ViewModel.RacunStavka
+
+
+<div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h2>Stavke</h2>
+                <hr />
+
+                <table class="table" style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>Proizvod</th>
+                            <th>Potkategorija</th>
+                            <th>Kategorija</th>
+                            <th>Kolicina</th>
+                            <th>Cijena po komadu</th>
+                            <th>Popust</th>
+                            <th>Ukupna cijena</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.ListaStavki)
+                        {
+                            <tr>
+                                <td>@item.Proizvod.Naziv</td>
+                                <td>@item.Proizvod.Potkategorija.Naziv</td>
+                                <td>@item.Proizvod.Potkategorija.Kategorija.Naziv</td>
+                                <td>@item.Kolicina</td>
+                                <td>@item.CijenaPoKomadu</td>
+                                <td>@item.PopustUPostocima %</td>
+                                <td>@item.UkupnaCijena</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
